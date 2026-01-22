@@ -23,48 +23,48 @@
           "type": "add_block",
           "settings": {
             "image": "shopify://shop_images/9165484_happy_emoji_face_icon_66ce671d-2609-481b-ac8c-86edb3d3734d.png",
-            "title": "Title",
-            "title_description": "title description"
+            "title": "Title 1",
+            "title_description": "title description 1"
           }
         },
         "add_block_FTPgDn": {
           "type": "add_block",
           "settings": {
             "image": "shopify://shop_images/9165484_happy_emoji_face_icon_66ce671d-2609-481b-ac8c-86edb3d3734d.png",
-            "title": "Title",
-            "title_description": "title description"
+            "title": "Title 2",
+            "title_description": "title description 2"
           }
         },
         "add_block_KydHWh": {
           "type": "add_block",
           "settings": {
             "image": "shopify://shop_images/9165484_happy_emoji_face_icon_66ce671d-2609-481b-ac8c-86edb3d3734d.png",
-            "title": "Title",
-            "title_description": "title description"
+            "title": "Title 3",
+            "title_description": "title description 3"
           }
         },
         "add_block_fKbUkt": {
           "type": "add_block",
           "settings": {
             "image": "shopify://shop_images/9165484_happy_emoji_face_icon_66ce671d-2609-481b-ac8c-86edb3d3734d.png",
-            "title": "Title",
-            "title_description": "title description"
+            "title": "Title 4",
+            "title_description": "title description 4"
           }
         },
         "add_block_ByWN38": {
           "type": "add_block",
           "settings": {
             "image": "shopify://shop_images/9165484_happy_emoji_face_icon_66ce671d-2609-481b-ac8c-86edb3d3734d.png",
-            "title": "Title",
-            "title_description": "title description"
+            "title": "Title 5",
+            "title_description": "title description 5"
           }
         },
         "add_block_N9gD3R": {
           "type": "add_block",
           "settings": {
             "image": "shopify://shop_images/9165484_happy_emoji_face_icon_66ce671d-2609-481b-ac8c-86edb3d3734d.png",
-            "title": "Title",
-            "title_description": "title description"
+            "title": "Title 6",
+            "title_description": "title description 6"
           }
         }
       },
