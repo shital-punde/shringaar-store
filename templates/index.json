@@ -1,11 +1,45 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
       "type": "dummy",
-      "settings": {}
+      "settings": {
+        "padding_top": 10,
+        "padding_bottom": 10
+      }
+    },
+    "project_JRUfJV": {
+      "type": "project",
+      "blocks": {
+        "add_block_EfxjLG": {
+          "type": "add_block",
+          "settings": {
+            "image": "shopify://shop_images/9165484_happy_emoji_face_icon_66ce671d-2609-481b-ac8c-86edb3d3734d.png",
+            "title": "Title",
+            "title_description": "title description"
+          }
+        }
+      },
+      "block_order": [
+        "add_block_EfxjLG"
+      ],
+      "name": "project",
+      "settings": {
+        "heading": "Heading",
+        "description": "description"
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "project_JRUfJV"
   ]
 }
