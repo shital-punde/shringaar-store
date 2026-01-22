@@ -1,0 +1,141 @@
+<style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    .info-section {
+    background-color: #eee;
+    padding: 48px 16px;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .section-header h2 {
+    margin-bottom: 18px;
+  }
+
+  .section-header p {
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    place-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+    gap: 24px;
+    align-items: baseline;
+    justify-items: baseline;
+  }
+
+  .card {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    border: 1px solid #eaeaea;
+    padding: 20px;
+    background-color: #ffffff;
+    max-width: 300px;
+    border-radius: 5px;
+  }
+
+  .card-image img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+  }
+
+  .card-content h4 {
+    margin: 0 0 6px;
+    font-size: 16px;
+  }
+
+  .card-content p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+</style>
+
+<section class="info-section">
+  <div class="container">
+    <header class="section-header">
+      <h2>{{ section.settings.heading }}</h2>
+      <p>
+        {{ section.settings.description }}
+      </p>
+    </header>
+
+    <div class="card-grid">
+      {% for block in section.blocks %}
+        <article class="card">
+          <div class="card-image">
+            <img src="{{ block.settings.image }}" alt="Feature icon">
+          </div>
+          <div class="card-content">
+            <h4>{{ block.settings.title }}</h4>
+            <p>{{ block.settings.title_description }}</p>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "project",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "description",
+      "label": "Description",
+      "default": "description"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "add_block",
+      "name": "add_block",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "text",
+          "id": "title_description",
+          "label": "Title Description"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
