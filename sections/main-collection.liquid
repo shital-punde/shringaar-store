@@ -1,0 +1,92 @@
+{%- paginate collection.products by section.settings.products_per_page -%}
+<div class="main-collection section">
+  <div class="page-width">
+    <header class="main-collection__header">
+      <h1 class="main-collection__title">{{ collection.title }}</h1>
+      {%- if collection.description != blank -%}
+        <div class="main-collection__description rte">
+          {{ collection.description }}
+        </div>
+      {%- endif -%}
+      <p class="main-collection__count">
+        {{ 'collections.product_count' | t: count: collection.products_count }}
+      </p>
+    </header>
+
+    {%- if collection.products.size > 0 -%}
+      <ul class="main-collection__grid grid grid--{{ section.settings.columns }}" role="list">
+        {%- for product in collection.products -%}
+          <li class="main-collection__item">
+            {% render 'product-card', product: product %}
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      {%- if paginate.pages > 1 -%}
+        {% render 'pagination', paginate: paginate %}
+      {%- endif -%}
+    {%- else -%}
+      <p class="main-collection__empty">{{ 'collections.no_products' | t }}</p>
+    {%- endif -%}
+  </div>
+</div>
+{%- endpaginate -%}
+
+<style>
+  .main-collection__header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .main-collection__title {
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .main-collection__description {
+    max-width: 700px;
+    margin: 0 auto var(--spacing-md);
+    color: var(--color-text-light);
+  }
+
+  .main-collection__count {
+    color: var(--color-text-light);
+    font-size: 0.875rem;
+  }
+
+  .main-collection__grid {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .main-collection__empty {
+    text-align: center;
+    color: var(--color-text-light);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Collection products",
+  "tag": "section",
+  "class": "section-main-collection",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 8,
+      "max": 24,
+      "step": 4,
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 4
+    }
+  ]
+}
+{% endschema %}

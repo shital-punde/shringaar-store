@@ -1,0 +1,43 @@
+<div class="main-page section">
+  <div class="page-width">
+    <header class="main-page__header">
+      <h1 class="main-page__title">{{ page.title }}</h1>
+    </header>
+
+    {%- if page.content != blank -%}
+      <div class="main-page__content rte">
+        {{ page.content }}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Page content",
+  "tag": "section",
+  "class": "section-main-page",
+  "settings": [
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "default": 36,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "default": 36,
+      "unit": "px"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,191 @@
+{%- comment -%}
+  Address form fields snippet
+  Used in customer addresses section
+
+  Parameters:
+  - form: The address form object
+{%- endcomment -%}
+
+<div class="address-form">
+  <div class="address-form__grid">
+    <div class="form-group">
+      <label for="{{ form.id }}-first-name" class="form-label">{{ 'customer.addresses.first_name' | t }}</label>
+      <input
+        type="text"
+        id="{{ form.id }}-first-name"
+        name="address[first_name]"
+        class="form-input"
+        autocomplete="given-name"
+        value="{{ form.first_name }}"
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.id }}-last-name" class="form-label">{{ 'customer.addresses.last_name' | t }}</label>
+      <input
+        type="text"
+        id="{{ form.id }}-last-name"
+        name="address[last_name]"
+        class="form-input"
+        autocomplete="family-name"
+        value="{{ form.last_name }}"
+      >
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.id }}-company" class="form-label">{{ 'customer.addresses.company' | t }}</label>
+    <input
+      type="text"
+      id="{{ form.id }}-company"
+      name="address[company]"
+      class="form-input"
+      autocomplete="organization"
+      value="{{ form.company }}"
+    >
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.id }}-address1" class="form-label">{{ 'customer.addresses.address1' | t }}</label>
+    <input
+      type="text"
+      id="{{ form.id }}-address1"
+      name="address[address1]"
+      class="form-input"
+      autocomplete="address-line1"
+      value="{{ form.address1 }}"
+      required
+    >
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.id }}-address2" class="form-label">{{ 'customer.addresses.address2' | t }}</label>
+    <input
+      type="text"
+      id="{{ form.id }}-address2"
+      name="address[address2]"
+      class="form-input"
+      autocomplete="address-line2"
+      value="{{ form.address2 }}"
+    >
+  </div>
+
+  <div class="address-form__grid">
+    <div class="form-group">
+      <label for="{{ form.id }}-city" class="form-label">{{ 'customer.addresses.city' | t }}</label>
+      <input
+        type="text"
+        id="{{ form.id }}-city"
+        name="address[city]"
+        class="form-input"
+        autocomplete="address-level2"
+        value="{{ form.city }}"
+        required
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.id }}-country" class="form-label">{{ 'customer.addresses.country' | t }}</label>
+      <select
+        id="{{ form.id }}-country"
+        name="address[country]"
+        class="form-select"
+        autocomplete="country"
+        data-address-country
+        data-form-id="{{ form.id }}"
+      >
+        {{ all_country_option_tags }}
+      </select>
+    </div>
+  </div>
+
+  <div class="address-form__grid">
+    <div class="form-group" id="{{ form.id }}-province-group">
+      <label for="{{ form.id }}-province" class="form-label">{{ 'customer.addresses.province' | t }}</label>
+      <select
+        id="{{ form.id }}-province"
+        name="address[province]"
+        class="form-select"
+        autocomplete="address-level1"
+        data-address-province
+      >
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.id }}-zip" class="form-label">{{ 'customer.addresses.zip' | t }}</label>
+      <input
+        type="text"
+        id="{{ form.id }}-zip"
+        name="address[zip]"
+        class="form-input"
+        autocomplete="postal-code"
+        value="{{ form.zip }}"
+      >
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.id }}-phone" class="form-label">{{ 'customer.addresses.phone' | t }}</label>
+    <input
+      type="tel"
+      id="{{ form.id }}-phone"
+      name="address[phone]"
+      class="form-input"
+      autocomplete="tel"
+      value="{{ form.phone }}"
+    >
+  </div>
+</div>
+
+<script>
+  (function() {
+    var countrySelect = document.querySelector('[data-address-country][data-form-id="{{ form.id }}"]');
+    var provinceSelect = document.getElementById('{{ form.id }}-province');
+    var provinceGroup = document.getElementById('{{ form.id }}-province-group');
+
+    if (countrySelect && provinceSelect) {
+      // Set initial country value
+      var currentCountry = '{{ form.country }}' || '{{ localization.country.iso_code }}';
+      countrySelect.value = currentCountry;
+
+      // Update provinces on country change
+      countrySelect.addEventListener('change', function() {
+        updateProvinces(this.value);
+      });
+
+      // Initial province update
+      updateProvinces(currentCountry);
+    }
+
+    function updateProvinces(country) {
+      var option = countrySelect.querySelector('option[value="' + country + '"]');
+      var provinces = option ? option.getAttribute('data-provinces') : null;
+
+      provinceSelect.innerHTML = '';
+
+      if (provinces) {
+        try {
+          var provincesData = JSON.parse(provinces);
+          if (provincesData.length > 0) {
+            provincesData.forEach(function(province) {
+              var opt = document.createElement('option');
+              opt.value = province[0];
+              opt.textContent = province[1];
+              provinceSelect.appendChild(opt);
+            });
+            provinceGroup.style.display = '';
+            // Set current province value
+            var currentProvince = '{{ form.province }}';
+            if (currentProvince) {
+              provinceSelect.value = currentProvince;
+            }
+            return;
+          }
+        } catch (e) {}
+      }
+
+      provinceGroup.style.display = 'none';
+    }
+  })();
+</script>

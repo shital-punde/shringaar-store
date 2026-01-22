@@ -1,0 +1,136 @@
+<div class="main-order section">
+  <div class="page-width">
+    <div class="main-order__header">
+      <a href="{{ routes.account_url }}" class="main-order__back">
+        &larr; {{ 'customer.account.return' | t }}
+      </a>
+      <h1 class="main-order__title">{{ 'customer.order.title' | t: name: order.name }}</h1>
+      <p class="main-order__date">
+        {{ 'customer.order.date_html' | t: date: order.created_at | date: format: 'date' }}
+      </p>
+    </div>
+
+    {%- if order.cancelled -%}
+      <div class="main-order__cancelled" role="alert">
+        <p>{{ 'customer.order.cancelled_html' | t: date: order.cancelled_at | date: format: 'date' }}</p>
+        <p>{{ 'customer.order.cancelled_reason' | t: reason: order.cancel_reason_label }}</p>
+      </div>
+    {%- endif -%}
+
+    <div class="main-order__content">
+      <div class="main-order__items">
+        <table class="main-order__table">
+          <thead>
+            <tr>
+              <th>{{ 'customer.order.product' | t }}</th>
+              <th>{{ 'customer.order.sku' | t }}</th>
+              <th>{{ 'customer.order.price' | t }}</th>
+              <th>{{ 'customer.order.quantity' | t }}</th>
+              <th>{{ 'customer.order.total' | t }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {%- for line_item in order.line_items -%}
+              <tr>
+                <td data-label="{{ 'customer.order.product' | t }}">
+                  <div class="main-order__product">
+                    {%- if line_item.product.featured_image -%}
+                      <img
+                        src="{{ line_item.product.featured_image | image_url: width: 100 }}"
+                        alt="{{ line_item.product.featured_image.alt | escape }}"
+                        width="50"
+                        height="50"
+                        loading="lazy"
+                      >
+                    {%- endif -%}
+                    <div>
+                      {%- if line_item.url -%}
+                        <a href="{{ line_item.url }}">{{ line_item.title }}</a>
+                      {%- else -%}
+                        {{ line_item.title }}
+                      {%- endif -%}
+                      {%- if line_item.line_level_discount_allocations.size > 0 -%}
+                        <ul class="main-order__discounts">
+                          {%- for discount in line_item.line_level_discount_allocations -%}
+                            <li>{{ discount.discount_application.title }} (-{{ discount.amount | money }})</li>
+                          {%- endfor -%}
+                        </ul>
+                      {%- endif -%}
+                      {%- if line_item.fulfillment -%}
+                        <div class="main-order__fulfillment">
+                          <span>{{ 'customer.order.fulfilled_at_html' | t: date: line_item.fulfillment.created_at | date: format: 'date' }}</span>
+                          {%- if line_item.fulfillment.tracking_url -%}
+                            <a href="{{ line_item.fulfillment.tracking_url }}">
+                              {{ 'customer.order.track_shipment' | t }}
+                            </a>
+                          {%- endif -%}
+                        </div>
+                      {%- endif -%}
+                    </div>
+                  </div>
+                </td>
+                <td data-label="{{ 'customer.order.sku' | t }}">{{ line_item.sku | default: '-' }}</td>
+                <td data-label="{{ 'customer.order.price' | t }}">{{ line_item.original_price | money }}</td>
+                <td data-label="{{ 'customer.order.quantity' | t }}">{{ line_item.quantity }}</td>
+                <td data-label="{{ 'customer.order.total' | t }}">{{ line_item.final_line_price | money }}</td>
+              </tr>
+            {%- endfor -%}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="4">{{ 'customer.order.subtotal' | t }}</td>
+              <td>{{ order.line_items_subtotal_price | money }}</td>
+            </tr>
+            {%- for discount in order.cart_level_discount_applications -%}
+              <tr>
+                <td colspan="4">{{ 'customer.order.discount' | t }} ({{ discount.title }})</td>
+                <td>-{{ discount.total_allocated_amount | money }}</td>
+              </tr>
+            {%- endfor -%}
+            {%- for shipping_method in order.shipping_methods -%}
+              <tr>
+                <td colspan="4">{{ 'customer.order.shipping' | t }} ({{ shipping_method.title }})</td>
+                <td>{{ shipping_method.price | money }}</td>
+              </tr>
+            {%- endfor -%}
+            {%- for tax_line in order.tax_lines -%}
+              <tr>
+                <td colspan="4">{{ 'customer.order.tax' | t }} ({{ tax_line.title }} {{ tax_line.rate | times: 100 }}%)</td>
+                <td>{{ tax_line.price | money }}</td>
+              </tr>
+            {%- endfor -%}
+            <tr class="main-order__total">
+              <td colspan="4">{{ 'customer.order.total' | t }}</td>
+              <td>{{ order.total_price | money }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="main-order__details">
+        <div class="main-order__addresses">
+          <div class="main-order__billing">
+            <h3>{{ 'customer.order.billing_address' | t }}</h3>
+            <p><strong>{{ 'customer.order.payment_status' | t }}:</strong> {{ order.financial_status_label }}</p>
+            {{ order.billing_address | format_address }}
+          </div>
+
+          <div class="main-order__shipping">
+            <h3>{{ 'customer.order.shipping_address' | t }}</h3>
+            <p><strong>{{ 'customer.order.fulfillment_status' | t }}:</strong> {{ order.fulfillment_status_label | default: 'Unfulfilled' }}</p>
+            {{ order.shipping_address | format_address }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Customer order",
+  "tag": "section",
+  "class": "section-main-order",
+  "settings": []
+}
+{% endschema %}

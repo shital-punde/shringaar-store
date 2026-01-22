@@ -1,0 +1,159 @@
+{% comment %}
+  Snippet: price
+  Purpose: Renders product/variant price with sale and compare at price
+
+  Parameters:
+  - product: product object - Shopify product (required if no variant)
+  - variant: variant object - Specific variant (optional, uses first available variant if not provided)
+  - show_compare: boolean - Show compare at price (optional, default: true)
+  - class: string - Additional CSS classes (optional)
+
+  Usage:
+  {% render 'price', product: product %}
+  {% render 'price', variant: current_variant, show_compare: true %}
+{% endcomment %}
+
+{%- liquid
+  assign price_class = 'price'
+  if class
+    assign price_class = price_class | append: ' ' | append: class
+  endif
+
+  assign show_compare_at = show_compare | default: true
+
+  if variant
+    assign target = variant
+    assign price = variant.price
+    assign compare_at_price = variant.compare_at_price
+    assign available = variant.available
+  else
+    assign target = product
+    assign price = product.price
+    assign compare_at_price = product.compare_at_price
+    assign available = product.available
+  endif
+
+  assign on_sale = false
+  if compare_at_price > price and show_compare_at
+    assign on_sale = true
+  endif
+
+  assign price_varies = false
+  unless variant
+    if product.price_varies
+      assign price_varies = true
+    endif
+  endunless
+-%}
+
+<div class="{{ price_class }}{% if on_sale %} price--on-sale{% endif %}{% unless available %} price--sold-out{% endunless %}">
+  {%- if available == false -%}
+    <span class="price__sold-out">
+      {{ 'products.product.sold_out' | t }}
+    </span>
+  {%- else -%}
+    <div class="price__container">
+      {%- if on_sale -%}
+        <span class="price__compare visually-hidden">
+          {{ 'products.product.regular_price' | t }}
+        </span>
+        <s class="price__compare-value">
+          {{- compare_at_price | money -}}
+        </s>
+      {%- endif -%}
+
+      <span class="price__regular{% if on_sale %} price__regular--sale{% endif %}">
+        {%- if price_varies -%}
+          <span class="price__from visually-hidden">
+            {{ 'products.product.price' | t }}
+          </span>
+          <span class="price__from-text">
+            {{ 'products.product.price' | t }}
+          </span>
+        {%- endif -%}
+        <span class="price__value">
+          {{- price | money -}}
+        </span>
+      </span>
+
+      {%- if on_sale -%}
+        <span class="price__badge">
+          {{ 'products.product.on_sale' | t }}
+        </span>
+      {%- endif -%}
+    </div>
+
+    {%- if target.unit_price_measurement -%}
+      <div class="price__unit">
+        <span class="visually-hidden">{{ 'products.product.unit_price' | t }}</span>
+        <span class="price__unit-value">
+          {{- target.unit_price | money -}}
+        </span>
+        <span class="price__unit-separator">{{ 'accessibility.unit_price_separator' | t }}</span>
+        <span class="price__unit-measurement">
+          {%- if target.unit_price_measurement.reference_value != 1 -%}
+            {{- target.unit_price_measurement.reference_value -}}
+          {%- endif -%}
+          {{ target.unit_price_measurement.reference_unit }}
+        </span>
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+</div>
+
+<style>
+  .price {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+
+  .price__container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+
+  .price__regular {
+    font-weight: 500;
+  }
+
+  .price__regular--sale {
+    color: var(--color-error);
+  }
+
+  .price__compare-value {
+    color: var(--color-text-light);
+    text-decoration: line-through;
+  }
+
+  .price__badge {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    background-color: var(--color-error);
+    color: var(--color-secondary);
+    border-radius: var(--border-radius-sm);
+  }
+
+  .price__sold-out {
+    font-weight: 500;
+    color: var(--color-text-light);
+  }
+
+  .price__unit {
+    font-size: 0.875rem;
+    color: var(--color-text-light);
+  }
+
+  .price__from-text {
+    font-weight: normal;
+  }
+
+  .price__from-text::after {
+    content: ' ';
+  }
+</style>

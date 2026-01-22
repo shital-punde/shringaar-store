@@ -1,0 +1,115 @@
+{%- paginate search.results by 12 -%}
+<div class="main-search section">
+  <div class="page-width">
+    <header class="main-search__header">
+      <h1 class="main-search__title">{{ 'search.title' | t }}</h1>
+
+      <form action="{{ routes.search_url }}" method="get" class="main-search__form">
+        <div class="main-search__input-wrapper">
+          <label for="Search" class="visually-hidden">{{ 'search.placeholder' | t }}</label>
+          <input
+            type="search"
+            name="q"
+            id="Search"
+            value="{{ search.terms | escape }}"
+            placeholder="{{ 'search.placeholder' | t }}"
+            class="form-input main-search__input"
+          >
+          <button type="submit" class="button button--primary">
+            {{ 'search.title' | t }}
+          </button>
+        </div>
+      </form>
+    </header>
+
+    {%- if search.performed -%}
+      {%- if search.results_count > 0 -%}
+        <p class="main-search__count">
+          {{ 'search.results_count' | t: count: search.results_count }}
+        </p>
+
+        <ul class="main-search__results grid grid--4" role="list">
+          {%- for result in search.results -%}
+            <li class="main-search__item">
+              {%- case result.object_type -%}
+                {%- when 'product' -%}
+                  {% render 'product-card', product: result %}
+                {%- when 'article' -%}
+                  <article class="article-card">
+                    <a href="{{ result.url }}">
+                      <h3>{{ result.title }}</h3>
+                      <p>{{ result.content | strip_html | truncate: 100 }}</p>
+                    </a>
+                  </article>
+                {%- when 'page' -%}
+                  <div class="page-card">
+                    <a href="{{ result.url }}">
+                      <h3>{{ result.title }}</h3>
+                      <p>{{ result.content | strip_html | truncate: 100 }}</p>
+                    </a>
+                  </div>
+              {%- endcase -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+
+        {%- if paginate.pages > 1 -%}
+          {% render 'pagination', paginate: paginate %}
+        {%- endif -%}
+      {%- else -%}
+        <p class="main-search__no-results">
+          {{ 'search.no_results' | t: query: search.terms }}
+        </p>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</div>
+{%- endpaginate -%}
+
+<style>
+  .main-search__header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .main-search__title {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .main-search__form {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .main-search__input-wrapper {
+    display: flex;
+    gap: var(--spacing-sm);
+  }
+
+  .main-search__input {
+    flex: 1;
+  }
+
+  .main-search__count {
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-text-light);
+  }
+
+  .main-search__results {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .main-search__no-results {
+    text-align: center;
+    color: var(--color-text-light);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Search results",
+  "tag": "section",
+  "class": "section-main-search",
+  "settings": []
+}
+{% endschema %}

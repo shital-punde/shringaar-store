@@ -1,0 +1,99 @@
+{% comment %}
+  Snippet: pagination
+  Purpose: Renders pagination controls
+
+  Parameters:
+  - paginate: paginate object - Shopify paginate object (required)
+
+  Usage:
+  {% paginate collection.products by 12 %}
+    {% render 'pagination', paginate: paginate %}
+  {% endpaginate %}
+{% endcomment %}
+
+{%- if paginate.pages > 1 -%}
+  <nav class="pagination" role="navigation" aria-label="{{ 'pagination.page' | t: number: paginate.current_page }}">
+    <ul class="pagination__list" role="list">
+      {%- if paginate.previous -%}
+        <li class="pagination__item pagination__item--prev">
+          <a href="{{ paginate.previous.url }}" class="pagination__link" aria-label="{{ 'pagination.previous' | t }}">
+            {% render 'icon', icon: 'chevron-left', size: 20 %}
+            <span class="mobile-hidden">{{ 'pagination.previous' | t }}</span>
+          </a>
+        </li>
+      {%- endif -%}
+
+      {%- for part in paginate.parts -%}
+        <li class="pagination__item">
+          {%- if part.is_link -%}
+            <a href="{{ part.url }}" class="pagination__link">
+              {{ part.title }}
+            </a>
+          {%- elsif part.title == paginate.current_page -%}
+            <span class="pagination__link pagination__link--current" aria-current="page">
+              {{ part.title }}
+            </span>
+          {%- else -%}
+            <span class="pagination__link pagination__link--ellipsis">{{ part.title }}</span>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+
+      {%- if paginate.next -%}
+        <li class="pagination__item pagination__item--next">
+          <a href="{{ paginate.next.url }}" class="pagination__link" aria-label="{{ 'pagination.next' | t }}">
+            <span class="mobile-hidden">{{ 'pagination.next' | t }}</span>
+            {% render 'icon', icon: 'chevron-right', size: 20 %}
+          </a>
+        </li>
+      {%- endif -%}
+    </ul>
+  </nav>
+{%- endif -%}
+
+<style>
+  .pagination {
+    display: flex;
+    justify-content: center;
+    padding: var(--spacing-lg) 0;
+  }
+
+  .pagination__list {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+  }
+
+  .pagination__link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 var(--spacing-sm);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-sm);
+    transition: all var(--duration-fast) var(--easing-default);
+  }
+
+  .pagination__link:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .pagination__link--current {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-secondary);
+  }
+
+  .pagination__link--ellipsis {
+    border: none;
+  }
+
+  .pagination__item--prev .pagination__link,
+  .pagination__item--next .pagination__link {
+    gap: var(--spacing-xs);
+  }
+</style>

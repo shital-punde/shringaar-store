@@ -1,0 +1,76 @@
+{% comment %}
+  Snippet: image
+  Purpose: Renders responsive images with lazy loading and placeholder
+
+  Parameters:
+  - image: image object - Shopify image (required)
+  - sizes: string - Responsive sizes attribute (optional, default: '100vw')
+  - widths: string - Comma-separated widths for srcset (optional, default: '375, 550, 750, 1100, 1500')
+  - lazy: boolean - Enable lazy loading (optional, default: true)
+  - class: string - Additional CSS classes (optional)
+  - alt: string - Alt text override (optional, uses image.alt if not provided)
+  - aspect_ratio: string - Aspect ratio for placeholder (optional, e.g., '1/1', '16/9')
+  - focal_point: string - CSS object-position value (optional, default: 'center')
+
+  Usage:
+  {% render 'image',
+    image: product.featured_image,
+    sizes: '(min-width: 750px) 50vw, 100vw',
+    lazy: true,
+    class: 'product-image',
+    aspect_ratio: '1/1'
+  %}
+{% endcomment %}
+
+{%- liquid
+  assign image_sizes = sizes | default: '100vw'
+  assign image_widths = widths | default: '375, 550, 750, 1100, 1500' | split: ', '
+  assign image_lazy = lazy | default: true
+  assign image_class = 'responsive-image'
+  if class
+    assign image_class = image_class | append: ' ' | append: class
+  endif
+  assign image_alt = alt | default: image.alt | escape
+  assign image_focal = focal_point | default: 'center'
+-%}
+
+{%- if image != blank -%}
+  <img
+    src="{{ image | image_url: width: 750 }}"
+    srcset="
+      {%- for width in image_widths -%}
+        {{ image | image_url: width: width }} {{ width }}w{%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    "
+    sizes="{{ image_sizes }}"
+    alt="{{ image_alt }}"
+    width="{{ image.width }}"
+    height="{{ image.height }}"
+    class="{{ image_class }}"
+    {%- if image_lazy %}
+      loading="lazy"
+      decoding="async"
+    {%- else %}
+      fetchpriority="high"
+    {%- endif %}
+    {%- if aspect_ratio %}
+      style="aspect-ratio: {{ aspect_ratio }}; object-fit: cover; object-position: {{ image_focal }};"
+    {%- endif %}
+  >
+{%- else -%}
+  {%- comment -%} Placeholder when no image is provided {%- endcomment -%}
+  <div
+    class="placeholder-image {{ class }}"
+    {%- if aspect_ratio %}
+      style="aspect-ratio: {{ aspect_ratio }};"
+    {%- else %}
+      style="aspect-ratio: 1/1;"
+    {%- endif %}
+  >
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+      <circle cx="8.5" cy="8.5" r="1.5"></circle>
+      <polyline points="21 15 16 10 5 21"></polyline>
+    </svg>
+  </div>
+{%- endif -%}

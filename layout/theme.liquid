@@ -1,0 +1,93 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, minimum-scale=1.0">
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+      {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+
+    {% render 'meta-tags' %}
+
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    {%- unless settings.heading_font.system? -%}
+      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {%- endunless -%}
+
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+    {{ 'base.css' | asset_url | stylesheet_tag: preload: true }}
+
+    {%- unless settings.heading_font.system? and settings.body_font.system? -%}
+      <style>
+        {{ settings.heading_font | font_face: font_display: 'swap' }}
+        {{ settings.body_font | font_face: font_display: 'swap' }}
+      </style>
+    {%- endunless -%}
+
+    <style>
+      :root {
+        --font-heading: {{ settings.heading_font.family }}, {{ settings.heading_font.fallback_families }};
+        --font-heading-weight: {{ settings.heading_font.weight }};
+        --font-heading-style: {{ settings.heading_font.style }};
+
+        --font-body: {{ settings.body_font.family }}, {{ settings.body_font.fallback_families }};
+        --font-body-weight: {{ settings.body_font.weight }};
+        --font-body-style: {{ settings.body_font.style }};
+
+        --color-primary: {{ settings.color_primary }};
+        --color-secondary: {{ settings.color_secondary }};
+        --color-accent: {{ settings.color_accent }};
+        --color-background: {{ settings.color_background }};
+        --color-text: {{ settings.color_text }};
+        --color-text-light: {{ settings.color_text_light }};
+        --color-border: {{ settings.color_border }};
+        --color-error: {{ settings.color_error }};
+        --color-success: {{ settings.color_success }};
+
+        --page-width: {{ settings.page_width }}px;
+        --spacing-unit: {{ settings.spacing_unit }}px;
+      }
+    </style>
+
+    {{ content_for_header }}
+
+    <script>
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+    </script>
+  </head>
+
+  <body class="template-{{ template.name }}{% if template.suffix %} template-{{ template.name }}-{{ template.suffix }}{% endif %}">
+    <a href="#main-content" class="skip-to-content visually-hidden-focusable">
+      {{ 'accessibility.skip_to_content' | t }}
+    </a>
+
+    {% sections 'header-group' %}
+
+    <main id="main-content" class="main-content" role="main">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    <script src="{{ 'global.js' | asset_url }}" defer></script>
+
+    {%- if settings.enable_predictive_search -%}
+      <script src="{{ 'component-predictive-search.js' | asset_url }}" defer></script>
+    {%- endif -%}
+  </body>
+</html>

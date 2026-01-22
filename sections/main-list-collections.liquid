@@ -1,0 +1,60 @@
+<div class="main-list-collections section">
+  <div class="page-width">
+    <header class="main-list-collections__header">
+      <h1 class="main-list-collections__title">{{ 'collections.title' | t }}</h1>
+    </header>
+
+    <ul class="main-list-collections__grid grid grid--{{ section.settings.columns }}" role="list">
+      {%- for collection in collections -%}
+        {%- if collection.all_products_count > 0 -%}
+          <li class="main-list-collections__item">
+            <a href="{{ collection.url }}" class="collection-card">
+              <div class="collection-card__image">
+                {%- if collection.image -%}
+                  {% render 'image',
+                    image: collection.image,
+                    sizes: '(min-width: 750px) 25vw, 50vw',
+                    aspect_ratio: '1/1'
+                  %}
+                {%- elsif collection.products.first.featured_image -%}
+                  {% render 'image',
+                    image: collection.products.first.featured_image,
+                    sizes: '(min-width: 750px) 25vw, 50vw',
+                    aspect_ratio: '1/1'
+                  %}
+                {%- else -%}
+                  <div class="placeholder-image" style="aspect-ratio: 1/1;"></div>
+                {%- endif -%}
+              </div>
+              <div class="collection-card__content">
+                <h2 class="collection-card__title">{{ collection.title }}</h2>
+                <p class="collection-card__count">
+                  {{ 'collections.product_count' | t: count: collection.all_products_count }}
+                </p>
+              </div>
+            </a>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collection list",
+  "tag": "section",
+  "class": "section-main-list-collections",
+  "settings": [
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 4
+    }
+  ]
+}
+{% endschema %}

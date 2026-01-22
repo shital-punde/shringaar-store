@@ -1,0 +1,57 @@
+<div class="main-activate-account section">
+  <div class="page-width">
+    <div class="main-activate-account__wrapper">
+      <h1 class="main-activate-account__title">{{ 'customer.activate_account.title' | t }}</h1>
+      <p class="main-activate-account__subtitle">{{ 'customer.activate_account.subtext' | t }}</p>
+
+      {%- form 'activate_customer_password', class: 'main-activate-account__form' -%}
+        {%- if form.errors -%}
+          <div class="form-errors" role="alert">
+            {{ form.errors | default_errors }}
+          </div>
+        {%- endif -%}
+
+        <div class="form-group">
+          <label for="activate-password" class="form-label">{{ 'customer.activate_account.password' | t }}</label>
+          <input
+            type="password"
+            id="activate-password"
+            name="customer[password]"
+            class="form-input"
+            autocomplete="new-password"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="activate-password-confirm" class="form-label">{{ 'customer.activate_account.password_confirm' | t }}</label>
+          <input
+            type="password"
+            id="activate-password-confirm"
+            name="customer[password_confirmation]"
+            class="form-input"
+            autocomplete="new-password"
+            required
+          >
+        </div>
+
+        <button type="submit" class="button button--primary main-activate-account__submit">
+          {{ 'customer.activate_account.submit' | t }}
+        </button>
+
+        <a href="{{ routes.account_login_url }}" class="main-activate-account__decline">
+          {{ 'customer.activate_account.cancel' | t }}
+        </a>
+      {%- endform -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Activate account",
+  "tag": "section",
+  "class": "section-main-activate-account",
+  "settings": []
+}
+{% endschema %}

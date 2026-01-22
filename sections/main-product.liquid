@@ -1,0 +1,177 @@
+<div class="main-product section">
+  <div class="page-width">
+    <div class="main-product__wrapper">
+      <div class="main-product__media">
+        {%- if product.featured_image -%}
+          {% render 'image',
+            image: product.featured_image,
+            sizes: '(min-width: 750px) 50vw, 100vw',
+            class: 'main-product__image'
+          %}
+        {%- else -%}
+          <div class="placeholder-image" style="aspect-ratio: 1/1;"></div>
+        {%- endif -%}
+      </div>
+
+      <div class="main-product__info">
+        <h1 class="main-product__title">{{ product.title }}</h1>
+
+        {%- if product.vendor -%}
+          <p class="main-product__vendor">{{ product.vendor }}</p>
+        {%- endif -%}
+
+        {% render 'price', product: product %}
+
+        {%- form 'product', product, class: 'main-product__form' -%}
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+
+          {%- unless product.has_only_default_variant -%}
+            <div class="main-product__variants">
+              {%- for option in product.options_with_values -%}
+                <div class="main-product__option">
+                  <label class="form-label" for="Option-{{ option.name | handleize }}">
+                    {{ option.name }}
+                  </label>
+                  <select
+                    id="Option-{{ option.name | handleize }}"
+                    class="form-select"
+                    name="options[{{ option.name }}]"
+                  >
+                    {%- for value in option.values -%}
+                      <option
+                        value="{{ value }}"
+                        {% if option.selected_value == value %}selected{% endif %}
+                      >
+                        {{ value }}
+                      </option>
+                    {%- endfor -%}
+                  </select>
+                </div>
+              {%- endfor -%}
+            </div>
+          {%- endunless -%}
+
+          <div class="main-product__quantity">
+            <label class="form-label" for="Quantity">{{ 'products.product.quantity' | t }}</label>
+            <quantity-input class="main-product__quantity-input">
+              <button type="button" data-decrease aria-label="{{ 'products.product.decrease_quantity' | t }}">
+                {% render 'icon', icon: 'minus', size: 16 %}
+              </button>
+              <input
+                type="number"
+                id="Quantity"
+                name="quantity"
+                value="1"
+                min="1"
+                class="form-input"
+              >
+              <button type="button" data-increase aria-label="{{ 'products.product.increase_quantity' | t }}">
+                {% render 'icon', icon: 'plus', size: 16 %}
+              </button>
+            </quantity-input>
+          </div>
+
+          <button
+            type="submit"
+            class="button button--primary main-product__submit"
+            {% unless product.available %}disabled{% endunless %}
+          >
+            {%- if product.available -%}
+              {{ 'products.product.add_to_cart' | t }}
+            {%- else -%}
+              {{ 'products.product.sold_out' | t }}
+            {%- endif -%}
+          </button>
+        {%- endform -%}
+
+        {%- if product.description != blank -%}
+          <div class="main-product__description rte">
+            {{ product.description }}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .main-product__wrapper {
+    display: grid;
+    gap: var(--spacing-xl);
+  }
+
+  @media screen and (min-width: 750px) {
+    .main-product__wrapper {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-2xl);
+    }
+  }
+
+  .main-product__title {
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .main-product__vendor {
+    color: var(--color-text-light);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .main-product__form {
+    margin-top: var(--spacing-lg);
+  }
+
+  .main-product__variants {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .main-product__quantity {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .main-product__quantity-input {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-sm);
+  }
+
+  .main-product__quantity-input button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    color: var(--color-text);
+  }
+
+  .main-product__quantity-input input {
+    width: 60px;
+    text-align: center;
+    border: none;
+    border-left: 1px solid var(--color-border);
+    border-right: 1px solid var(--color-border);
+    border-radius: 0;
+  }
+
+  .main-product__submit {
+    width: 100%;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .main-product__description {
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--color-border);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Product information",
+  "tag": "section",
+  "class": "section-main-product",
+  "settings": []
+}
+{% endschema %}

@@ -1,0 +1,144 @@
+<article class="main-article section" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="page-width">
+    {%- if article.image -%}
+      <div class="main-article__image">
+        {% render 'image',
+          image: article.image,
+          sizes: '100vw',
+          lazy: false,
+          aspect_ratio: '16/9'
+        %}
+      </div>
+    {%- endif -%}
+
+    <header class="main-article__header">
+      <h1 class="main-article__title" itemprop="headline">{{ article.title }}</h1>
+
+      <p class="main-article__meta">
+        <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}" itemprop="datePublished">
+          {{ article.published_at | date: format: 'date' }}
+        </time>
+        {%- if section.settings.show_author -%}
+          &middot;
+          <span itemprop="author">{{ article.author }}</span>
+        {%- endif -%}
+      </p>
+    </header>
+
+    <div class="main-article__content rte" itemprop="articleBody">
+      {{ article.content }}
+    </div>
+
+    {%- if article.tags.size > 0 and section.settings.show_tags -%}
+      <div class="main-article__tags">
+        <span>{{ 'blogs.article.tags' | t }}:</span>
+        {%- for tag in article.tags -%}
+          <a href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>
+          {%- unless forloop.last -%}, {% endunless -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.show_share -%}
+      <div class="main-article__share">
+        <span>{{ 'general.share' | t }}:</span>
+        <a href="https://www.facebook.com/sharer.php?u={{ article.url | prepend: request.origin }}" target="_blank" rel="noopener" aria-label="Share on Facebook">
+          {% render 'icon', icon: 'facebook', size: 20 %}
+        </a>
+        <a href="https://twitter.com/intent/tweet?url={{ article.url | prepend: request.origin }}&text={{ article.title | url_encode }}" target="_blank" rel="noopener" aria-label="Share on Twitter">
+          {% render 'icon', icon: 'twitter', size: 20 %}
+        </a>
+      </div>
+    {%- endif -%}
+
+    {%- if blog.comments_enabled? -%}
+      <div class="main-article__comments" id="comments">
+        <h2>{{ 'blogs.article.comments' | t }} ({{ article.comments_count }})</h2>
+
+        {%- if article.comments.size > 0 -%}
+          <ul class="main-article__comments-list">
+            {%- for comment in article.comments -%}
+              <li class="main-article__comment">
+                <p class="main-article__comment-author">{{ comment.author }}</p>
+                <p class="main-article__comment-date">{{ comment.created_at | date: format: 'date' }}</p>
+                <div class="main-article__comment-content">{{ comment.content }}</div>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        {% form 'new_comment', article %}
+          <h3>{{ 'blogs.article.leave_comment' | t }}</h3>
+
+          {%- if form.errors -%}
+            <div class="form-errors" role="alert">
+              {{ form.errors | default_errors }}
+            </div>
+          {%- endif -%}
+
+          <div class="form-group">
+            <label for="comment-author">{{ 'blogs.article.name' | t }}</label>
+            <input type="text" id="comment-author" name="comment[author]" class="form-input" required>
+          </div>
+
+          <div class="form-group">
+            <label for="comment-email">{{ 'blogs.article.email' | t }}</label>
+            <input type="email" id="comment-email" name="comment[email]" class="form-input" required>
+          </div>
+
+          <div class="form-group">
+            <label for="comment-body">{{ 'blogs.article.message' | t }}</label>
+            <textarea id="comment-body" name="comment[body]" class="form-textarea" required></textarea>
+          </div>
+
+          <button type="submit" class="button button--primary">
+            {{ 'blogs.article.post_comment' | t }}
+          </button>
+        {% endform %}
+      </div>
+    {%- endif -%}
+
+    <nav class="main-article__nav">
+      {%- if blog.previous_article -%}
+        <a href="{{ blog.previous_article }}" class="main-article__nav-link main-article__nav-link--prev">
+          {% render 'icon', icon: 'arrow-left', size: 20 %}
+          {{ 'blogs.article.previous' | t }}
+        </a>
+      {%- endif -%}
+      {%- if blog.next_article -%}
+        <a href="{{ blog.next_article }}" class="main-article__nav-link main-article__nav-link--next">
+          {{ 'blogs.article.next' | t }}
+          {% render 'icon', icon: 'arrow-right', size: 20 %}
+        </a>
+      {%- endif -%}
+    </nav>
+  </div>
+</article>
+
+{% schema %}
+{
+  "name": "Blog post",
+  "tag": "section",
+  "class": "section-main-article",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show author",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tags",
+      "label": "Show tags",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_share",
+      "label": "Show share buttons",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

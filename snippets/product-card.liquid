@@ -1,0 +1,160 @@
+{% comment %}
+  Snippet: product-card
+  Purpose: Renders a product card for use in collections, search, etc.
+
+  Parameters:
+  - product: product object - Shopify product (required)
+  - show_vendor: boolean - Show vendor name (optional, default: false)
+  - show_secondary_image: boolean - Show secondary image on hover (optional, default: true)
+  - class: string - Additional CSS classes (optional)
+
+  Usage:
+  {% render 'product-card', product: product, show_vendor: true %}
+{% endcomment %}
+
+{%- liquid
+  assign show_vendor = show_vendor | default: false
+  assign show_secondary_image = show_secondary_image | default: true
+  assign card_class = 'product-card'
+  if class
+    assign card_class = card_class | append: ' ' | append: class
+  endif
+-%}
+
+<div class="{{ card_class }}">
+  <a href="{{ product.url }}" class="product-card__link">
+    <div class="product-card__media">
+      {%- if product.featured_image -%}
+        {% render 'image',
+          image: product.featured_image,
+          sizes: '(min-width: 1200px) 300px, (min-width: 750px) 25vw, 50vw',
+          aspect_ratio: '1/1',
+          class: 'product-card__image product-card__image--primary'
+        %}
+
+        {%- if show_secondary_image and product.images.size > 1 -%}
+          {% render 'image',
+            image: product.images[1],
+            sizes: '(min-width: 1200px) 300px, (min-width: 750px) 25vw, 50vw',
+            aspect_ratio: '1/1',
+            class: 'product-card__image product-card__image--secondary'
+          %}
+        {%- endif -%}
+      {%- else -%}
+        <div class="placeholder-image" style="aspect-ratio: 1/1;"></div>
+      {%- endif -%}
+
+      {%- if product.compare_at_price > product.price -%}
+        <span class="product-card__badge product-card__badge--sale">
+          {{ 'products.product.on_sale' | t }}
+        </span>
+      {%- endif -%}
+
+      {%- unless product.available -%}
+        <span class="product-card__badge product-card__badge--sold-out">
+          {{ 'products.product.sold_out' | t }}
+        </span>
+      {%- endunless -%}
+    </div>
+
+    <div class="product-card__info">
+      {%- if show_vendor and product.vendor -%}
+        <p class="product-card__vendor">{{ product.vendor }}</p>
+      {%- endif -%}
+
+      <h3 class="product-card__title">{{ product.title }}</h3>
+
+      {% render 'price', product: product, class: 'product-card__price' %}
+    </div>
+  </a>
+</div>
+
+<style>
+  .product-card {
+    position: relative;
+  }
+
+  .product-card__link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .product-card__media {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: var(--spacing-sm);
+    border-radius: var(--border-radius-md);
+    background-color: var(--color-border);
+  }
+
+  .product-card__image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    transition: opacity var(--duration-normal) var(--easing-default);
+  }
+
+  .product-card__image--secondary {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+  }
+
+  .product-card:hover .product-card__image--primary {
+    opacity: 0;
+  }
+
+  .product-card:hover .product-card__image--secondary {
+    opacity: 1;
+  }
+
+  .product-card__badge {
+    position: absolute;
+    top: var(--spacing-sm);
+    left: var(--spacing-sm);
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: var(--border-radius-sm);
+  }
+
+  .product-card__badge--sale {
+    background-color: var(--color-error);
+    color: var(--color-secondary);
+  }
+
+  .product-card__badge--sold-out {
+    background-color: var(--color-text-light);
+    color: var(--color-secondary);
+  }
+
+  .product-card__info {
+    text-align: center;
+  }
+
+  .product-card__vendor {
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .product-card__title {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: var(--spacing-xs);
+    transition: color var(--duration-fast) var(--easing-default);
+  }
+
+  .product-card:hover .product-card__title {
+    color: var(--color-accent);
+  }
+
+  .product-card__price {
+    justify-content: center;
+  }
+</style>

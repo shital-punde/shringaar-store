@@ -1,0 +1,66 @@
+<div class="main-login section">
+  <div class="page-width">
+    <div class="main-login__wrapper">
+      <div class="main-login__form-container">
+        <h1 class="main-login__title">{{ 'customer.login.title' | t }}</h1>
+
+        {%- form 'customer_login', class: 'main-login__form' -%}
+          {%- if form.errors -%}
+            <div class="form-errors" role="alert">
+              {{ form.errors | default_errors }}
+            </div>
+          {%- endif -%}
+
+          <div class="form-group">
+            <label for="customer-email" class="form-label">{{ 'customer.login.email' | t }}</label>
+            <input
+              type="email"
+              id="customer-email"
+              name="customer[email]"
+              class="form-input"
+              autocomplete="email"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="customer-password" class="form-label">{{ 'customer.login.password' | t }}</label>
+            <input
+              type="password"
+              id="customer-password"
+              name="customer[password]"
+              class="form-input"
+              autocomplete="current-password"
+              required
+            >
+          </div>
+
+          <button type="submit" class="button button--primary main-login__submit">
+            {{ 'customer.login.sign_in' | t }}
+          </button>
+
+          <a href="{{ routes.account_recover_url }}" class="main-login__forgot">
+            {{ 'customer.login.forgot_password' | t }}
+          </a>
+        {%- endform -%}
+      </div>
+
+      <div class="main-login__register">
+        <h2>{{ 'customer.register.title' | t }}</h2>
+        <p>{{ 'customer.register.description' | t | default: 'Create an account to get started.' }}</p>
+        <a href="{{ routes.account_register_url }}" class="button button--secondary">
+          {{ 'customer.login.create_account' | t }}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Customer login",
+  "tag": "section",
+  "class": "section-main-login",
+  "settings": []
+}
+{% endschema %}

@@ -1,0 +1,223 @@
+<div class="main-cart section">
+  <div class="page-width">
+    <header class="main-cart__header">
+      <h1 class="main-cart__title">{{ 'cart.title' | t }}</h1>
+    </header>
+
+    {%- if cart.item_count > 0 -%}
+      <form action="{{ routes.cart_url }}" method="post" class="main-cart__form">
+        <div class="main-cart__items">
+          {%- for item in cart.items -%}
+            <div class="main-cart__item">
+              <div class="main-cart__item-image">
+                {%- if item.image -%}
+                  {% render 'image',
+                    image: item.image,
+                    sizes: '120px',
+                    widths: '80, 120, 160',
+                    aspect_ratio: '1/1'
+                  %}
+                {%- endif -%}
+              </div>
+
+              <div class="main-cart__item-info">
+                <h3 class="main-cart__item-title">
+                  <a href="{{ item.url }}">{{ item.product.title }}</a>
+                </h3>
+
+                {%- unless item.product.has_only_default_variant -%}
+                  <p class="main-cart__item-variant">{{ item.variant.title }}</p>
+                {%- endunless -%}
+
+                <p class="main-cart__item-price">{{ item.final_price | money }}</p>
+              </div>
+
+              <div class="main-cart__item-quantity">
+                <quantity-input>
+                  <button type="button" data-decrease aria-label="{{ 'products.product.decrease_quantity' | t }}">
+                    {% render 'icon', icon: 'minus', size: 16 %}
+                  </button>
+                  <input
+                    type="number"
+                    name="updates[]"
+                    value="{{ item.quantity }}"
+                    min="0"
+                    data-line="{{ forloop.index }}"
+                    class="form-input"
+                  >
+                  <button type="button" data-increase aria-label="{{ 'products.product.increase_quantity' | t }}">
+                    {% render 'icon', icon: 'plus', size: 16 %}
+                  </button>
+                </quantity-input>
+              </div>
+
+              <div class="main-cart__item-total">
+                {{ item.final_line_price | money }}
+              </div>
+
+              <a href="{{ item.url_to_remove }}" class="main-cart__item-remove" aria-label="{{ 'cart.remove' | t }}">
+                {% render 'icon', icon: 'trash', size: 20 %}
+              </a>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        <div class="main-cart__footer">
+          <div class="main-cart__subtotal">
+            <span>{{ 'cart.subtotal' | t }}</span>
+            <span class="main-cart__subtotal-value">{{ cart.total_price | money }}</span>
+          </div>
+
+          <p class="main-cart__note">{{ 'cart.taxes_and_shipping' | t }}</p>
+
+          <div class="main-cart__buttons">
+            <button type="submit" name="update" class="button button--secondary">
+              {{ 'cart.update' | t }}
+            </button>
+            <button type="submit" name="checkout" class="button button--primary">
+              {{ 'cart.checkout' | t }}
+            </button>
+          </div>
+        </div>
+      </form>
+    {%- else -%}
+      <div class="main-cart__empty">
+        <p>{{ 'cart.empty' | t }}</p>
+        <a href="{{ routes.all_products_collection_url }}" class="button button--primary">
+          {{ 'cart.continue_shopping' | t }}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+<style>
+  .main-cart__header {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .main-cart__items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .main-cart__item {
+    display: grid;
+    grid-template-columns: 80px 1fr auto auto;
+    gap: var(--spacing-md);
+    align-items: center;
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  @media screen and (max-width: 749px) {
+    .main-cart__item {
+      grid-template-columns: 80px 1fr;
+      grid-template-rows: auto auto;
+    }
+
+    .main-cart__item-quantity,
+    .main-cart__item-total {
+      grid-column: 2;
+    }
+  }
+
+  .main-cart__item-image {
+    width: 80px;
+    flex-shrink: 0;
+  }
+
+  .main-cart__item-title {
+    font-size: 1rem;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .main-cart__item-variant {
+    font-size: 0.875rem;
+    color: var(--color-text-light);
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .main-cart__item-quantity {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-sm);
+  }
+
+  .main-cart__item-quantity button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+  }
+
+  .main-cart__item-quantity input {
+    width: 50px;
+    text-align: center;
+    border: none;
+    border-left: 1px solid var(--color-border);
+    border-right: 1px solid var(--color-border);
+    border-radius: 0;
+    padding: var(--spacing-xs);
+  }
+
+  .main-cart__item-total {
+    font-weight: 500;
+  }
+
+  .main-cart__item-remove {
+    color: var(--color-text-light);
+  }
+
+  .main-cart__item-remove:hover {
+    color: var(--color-error);
+  }
+
+  .main-cart__footer {
+    max-width: 400px;
+    margin-left: auto;
+  }
+
+  .main-cart__subtotal {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .main-cart__note {
+    font-size: 0.875rem;
+    color: var(--color-text-light);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .main-cart__buttons {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .main-cart__empty {
+    text-align: center;
+    padding: var(--spacing-2xl) 0;
+  }
+
+  .main-cart__empty p {
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-text-light);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Cart",
+  "tag": "section",
+  "class": "section-main-cart",
+  "settings": []
+}
+{% endschema %}

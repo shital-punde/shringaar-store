@@ -1,0 +1,116 @@
+<div class="main-addresses section">
+  <div class="page-width">
+    <div class="main-addresses__header">
+      <h1 class="main-addresses__title">{{ 'customer.addresses.title' | t }}</h1>
+      <a href="{{ routes.account_url }}" class="main-addresses__back">
+        {{ 'customer.account.return' | t }}
+      </a>
+    </div>
+
+    <div class="main-addresses__content">
+      <button type="button" class="button button--primary main-addresses__add-btn" data-toggle-address-form>
+        {{ 'customer.addresses.add_new' | t }}
+      </button>
+
+      <div class="main-addresses__new-form" id="new-address-form" hidden>
+        <h2>{{ 'customer.addresses.add_new' | t }}</h2>
+        {%- form 'customer_address', customer.new_address, class: 'main-addresses__form' -%}
+          {% render 'address-form', form: form %}
+          <div class="main-addresses__form-actions">
+            <button type="submit" class="button button--primary">
+              {{ 'customer.addresses.add' | t }}
+            </button>
+            <button type="button" class="button button--secondary" data-toggle-address-form>
+              {{ 'customer.addresses.cancel' | t }}
+            </button>
+          </div>
+        {%- endform -%}
+      </div>
+
+      {%- if customer.addresses.size > 0 -%}
+        <div class="main-addresses__list">
+          {%- for address in customer.addresses -%}
+            <div class="main-addresses__item" data-address-id="{{ address.id }}">
+              <div class="main-addresses__item-content">
+                {%- if address == customer.default_address -%}
+                  <span class="main-addresses__default-badge">{{ 'customer.addresses.default' | t }}</span>
+                {%- endif -%}
+                {{ address | format_address }}
+              </div>
+
+              <div class="main-addresses__item-actions">
+                <button type="button" class="main-addresses__edit-btn" data-toggle-edit="{{ address.id }}">
+                  {{ 'customer.addresses.edit' | t }}
+                </button>
+                <button type="button" class="main-addresses__delete-btn" data-delete-address="{{ address.id }}">
+                  {{ 'customer.addresses.delete' | t }}
+                </button>
+              </div>
+
+              <div class="main-addresses__edit-form" id="edit-address-{{ address.id }}" hidden>
+                {%- form 'customer_address', address, class: 'main-addresses__form' -%}
+                  {% render 'address-form', form: form %}
+                  <div class="main-addresses__form-checkbox">
+                    <input type="checkbox" name="address[default]" id="default-{{ address.id }}" value="1"
+                      {%- if address == customer.default_address %} checked{% endif -%}>
+                    <label for="default-{{ address.id }}">{{ 'customer.addresses.set_default' | t }}</label>
+                  </div>
+                  <div class="main-addresses__form-actions">
+                    <button type="submit" class="button button--primary">
+                      {{ 'customer.addresses.update' | t }}
+                    </button>
+                    <button type="button" class="button button--secondary" data-toggle-edit="{{ address.id }}">
+                      {{ 'customer.addresses.cancel' | t }}
+                    </button>
+                  </div>
+                {%- endform -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- else -%}
+        <p class="main-addresses__empty">{{ 'customer.addresses.no_addresses' | t | default: 'You have no saved addresses.' }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Toggle new address form
+    document.querySelectorAll('[data-toggle-address-form]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var form = document.getElementById('new-address-form');
+        form.hidden = !form.hidden;
+      });
+    });
+
+    // Toggle edit forms
+    document.querySelectorAll('[data-toggle-edit]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var id = this.getAttribute('data-toggle-edit');
+        var form = document.getElementById('edit-address-' + id);
+        form.hidden = !form.hidden;
+      });
+    });
+
+    // Delete address
+    document.querySelectorAll('[data-delete-address]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        if (confirm('{{ 'customer.addresses.delete_confirm' | t | default: 'Are you sure you want to delete this address?' }}')) {
+          var id = this.getAttribute('data-delete-address');
+          Shopify.postLink('/account/addresses/' + id, { parameters: { _method: 'delete' } });
+        }
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Customer addresses",
+  "tag": "section",
+  "class": "section-main-addresses",
+  "settings": []
+}
+{% endschema %}

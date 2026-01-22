@@ -1,0 +1,239 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Shringaar",
+    "theme_version": "1.0.0",
+    "theme_author": "Shringaar Team",
+    "theme_documentation_url": "https://github.com/shringaar",
+    "theme_support_url": "https://github.com/shringaar/support"
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "font_picker",
+        "id": "heading_font",
+        "label": "Heading font",
+        "default": "assistant_n4"
+      },
+      {
+        "type": "font_picker",
+        "id": "body_font",
+        "label": "Body font",
+        "default": "assistant_n4"
+      },
+      {
+        "type": "range",
+        "id": "base_font_size",
+        "label": "Base font size",
+        "min": 12,
+        "max": 20,
+        "step": 1,
+        "default": 16,
+        "unit": "px"
+      }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Primary colors"
+      },
+      {
+        "type": "color",
+        "id": "color_primary",
+        "label": "Primary color",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "color_secondary",
+        "label": "Secondary color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent color",
+        "default": "#4a4a4a"
+      },
+      {
+        "type": "header",
+        "content": "Background & text"
+      },
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Background color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Text color",
+        "default": "#1a1a1a"
+      },
+      {
+        "type": "color",
+        "id": "color_text_light",
+        "label": "Light text color",
+        "default": "#666666"
+      },
+      {
+        "type": "header",
+        "content": "UI colors"
+      },
+      {
+        "type": "color",
+        "id": "color_border",
+        "label": "Border color",
+        "default": "#e5e5e5"
+      },
+      {
+        "type": "color",
+        "id": "color_error",
+        "label": "Error color",
+        "default": "#dc3545"
+      },
+      {
+        "type": "color",
+        "id": "color_success",
+        "label": "Success color",
+        "default": "#28a745"
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "page_width",
+        "label": "Page width",
+        "min": 1000,
+        "max": 1600,
+        "step": 50,
+        "default": 1200,
+        "unit": "px"
+      },
+      {
+        "type": "range",
+        "id": "spacing_unit",
+        "label": "Base spacing unit",
+        "min": 4,
+        "max": 12,
+        "step": 1,
+        "default": 8,
+        "unit": "px"
+      }
+    ]
+  },
+  {
+    "name": "Favicon",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon image",
+        "info": "Will be scaled down to 32x32px"
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Social accounts"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook",
+        "label": "Facebook",
+        "info": "https://facebook.com/yourstore"
+      },
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram",
+        "info": "https://instagram.com/yourstore"
+      },
+      {
+        "type": "text",
+        "id": "social_twitter",
+        "label": "Twitter / X",
+        "info": "https://twitter.com/yourstore"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube",
+        "label": "YouTube",
+        "info": "https://youtube.com/yourstore"
+      },
+      {
+        "type": "text",
+        "id": "social_pinterest",
+        "label": "Pinterest",
+        "info": "https://pinterest.com/yourstore"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok",
+        "label": "TikTok",
+        "info": "https://tiktok.com/@yourstore"
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "Cart type",
+        "options": [
+          {
+            "value": "page",
+            "label": "Page"
+          },
+          {
+            "value": "drawer",
+            "label": "Drawer"
+          }
+        ],
+        "default": "drawer"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_show_vendor",
+        "label": "Show vendor",
+        "default": false
+      }
+    ]
+  },
+  {
+    "name": "Search",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_predictive_search",
+        "label": "Enable predictive search",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "search_show_vendor",
+        "label": "Show vendor in results",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "search_show_price",
+        "label": "Show price in results",
+        "default": true
+      }
+    ]
+  }
+]

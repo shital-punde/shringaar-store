@@ -1,0 +1,132 @@
+<div class="contact-form section">
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="contact-form__heading {{ section.settings.heading_alignment }}">
+        {{ section.settings.heading }}
+      </h2>
+    {%- endif -%}
+
+    {%- if section.settings.subheading != blank -%}
+      <p class="contact-form__subheading {{ section.settings.heading_alignment }}">
+        {{ section.settings.subheading }}
+      </p>
+    {%- endif -%}
+
+    <div class="contact-form__wrapper">
+      {%- form 'contact', class: 'contact-form__form' -%}
+        {%- if form.posted_successfully? -%}
+          <div class="form-success" role="status">
+            {{ 'templates.contact.form.post_success' | t }}
+          </div>
+        {%- endif -%}
+
+        {%- if form.errors -%}
+          <div class="form-errors" role="alert">
+            {{ form.errors | default_errors }}
+          </div>
+        {%- endif -%}
+
+        <div class="contact-form__grid">
+          <div class="form-group">
+            <label for="contact-name" class="form-label">{{ 'templates.contact.form.name' | t }}</label>
+            <input
+              type="text"
+              id="contact-name"
+              name="contact[{{ 'templates.contact.form.name' | t }}]"
+              class="form-input"
+              autocomplete="name"
+              value="{{ form.name }}"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="contact-email" class="form-label">{{ 'templates.contact.form.email' | t }}</label>
+            <input
+              type="email"
+              id="contact-email"
+              name="contact[email]"
+              class="form-input"
+              autocomplete="email"
+              value="{{ form.email }}"
+              required
+            >
+          </div>
+        </div>
+
+        {%- if section.settings.show_phone -%}
+          <div class="form-group">
+            <label for="contact-phone" class="form-label">{{ 'templates.contact.form.phone' | t }}</label>
+            <input
+              type="tel"
+              id="contact-phone"
+              name="contact[{{ 'templates.contact.form.phone' | t }}]"
+              class="form-input"
+              autocomplete="tel"
+              value="{{ form.phone }}"
+            >
+          </div>
+        {%- endif -%}
+
+        <div class="form-group">
+          <label for="contact-message" class="form-label">{{ 'templates.contact.form.message' | t }}</label>
+          <textarea
+            id="contact-message"
+            name="contact[{{ 'templates.contact.form.message' | t }}]"
+            class="form-textarea"
+            rows="6"
+            required
+          >{{ form.body }}</textarea>
+        </div>
+
+        <button type="submit" class="button button--primary contact-form__submit">
+          {{ 'templates.contact.form.send' | t }}
+        </button>
+      {%- endform -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Contact form",
+  "tag": "section",
+  "class": "section-contact-form",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Contact us"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Have a question? We'd love to hear from you."
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Heading alignment",
+      "options": [
+        { "value": "text-left", "label": "Left" },
+        { "value": "text-center", "label": "Center" },
+        { "value": "text-right", "label": "Right" }
+      ],
+      "default": "text-center"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_phone",
+      "label": "Show phone field",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact form"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,92 @@
+{%- paginate blog.articles by section.settings.articles_per_page -%}
+<div class="main-blog section">
+  <div class="page-width">
+    <header class="main-blog__header">
+      <h1 class="main-blog__title">{{ blog.title }}</h1>
+    </header>
+
+    {%- if blog.articles.size > 0 -%}
+      <ul class="main-blog__grid grid grid--{{ section.settings.columns }}" role="list">
+        {%- for article in blog.articles -%}
+          <li class="main-blog__item">
+            <article class="article-card">
+              {%- if article.image -%}
+                <a href="{{ article.url }}" class="article-card__image-link">
+                  {% render 'image',
+                    image: article.image,
+                    sizes: '(min-width: 750px) 33vw, 100vw',
+                    aspect_ratio: '16/9'
+                  %}
+                </a>
+              {%- endif -%}
+
+              <div class="article-card__content">
+                <h2 class="article-card__title">
+                  <a href="{{ article.url }}">{{ article.title }}</a>
+                </h2>
+
+                <p class="article-card__meta">
+                  {{ article.published_at | date: format: 'date' }}
+                  {%- if section.settings.show_author -%}
+                    &middot; {{ article.author }}
+                  {%- endif -%}
+                </p>
+
+                {%- if article.excerpt.size > 0 -%}
+                  <p class="article-card__excerpt">
+                    {{ article.excerpt | strip_html | truncate: 150 }}
+                  </p>
+                {%- endif -%}
+
+                <a href="{{ article.url }}" class="article-card__link">
+                  {{ 'blogs.article.read_more' | t }}
+                </a>
+              </div>
+            </article>
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      {%- if paginate.pages > 1 -%}
+        {% render 'pagination', paginate: paginate %}
+      {%- endif -%}
+    {%- else -%}
+      <p class="main-blog__empty">{{ 'blogs.no_articles' | t }}</p>
+    {%- endif -%}
+  </div>
+</div>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Blog posts",
+  "tag": "section",
+  "class": "section-main-blog",
+  "settings": [
+    {
+      "type": "range",
+      "id": "articles_per_page",
+      "label": "Articles per page",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show author",
+      "default": true
+    }
+  ]
+}
+{% endschema %}
